@@ -94,7 +94,7 @@ class ArticleRepository(
             .header("User-Agent", UA)
         CookieStore.cookie?.let { builder.header("Cookie", it) }
 
-        client.newCall(builder.build()).await().use { response ->
+        return client.newCall(builder.build()).await().use { response ->
             if (!response.isSuccessful) throw IOException("图片请求失败：HTTP ${response.code}")
             val body = response.body ?: throw IOException("图片响应为空")
             val declared = body.contentLength()
