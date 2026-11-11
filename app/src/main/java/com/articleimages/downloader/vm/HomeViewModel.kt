@@ -61,7 +61,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         AppLog.i("入口", "已填入分享链接")
     }
 
-    fun setPreferOriginal(value: Boolean) {
+    /** 更新开关并持久化；方法名刻意不用 setPreferOriginal，避免与属性 setter 的 JVM 签名冲突。 */
+    fun updatePreferOriginal(value: Boolean) {
         preferOriginal = value
         settings.preferOriginal = value
     }
