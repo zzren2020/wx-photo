@@ -50,22 +50,25 @@ object DownloadController {
     var cancelRequested: Boolean = false
         private set
 
-    fun start(context: Context, job: Job) {
+    /** @return true 表示任务已被接受并提交给前台服务。 */
+    fun start(context: Context, job: Job): Boolean {
         if (_state.value is State.Running) {
             AppLog.w("下载", "已有下载任务在运行，忽略本次提交")
-            return
+            return false
         }
         pending = job
         cancelRequested = false
         _state.value = State.Running(0, job.items.size)
         val intent = Intent(context, DownloadService::class.java)
             .setAction(DownloadService.ACTION_START)
-        try {
+        return try {
             ContextCompat.startForegroundService(context, intent)
+            true
         } catch (e: Exception) {
             AppLog.e("下载", "启动下载服务失败", e)
             pending = null
             _state.value = State.Failed(e.message ?: "无法启动下载服务")
+            false
         }
     }
 
