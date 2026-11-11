@@ -163,7 +163,7 @@ fun HomeScreen(
                 Text("优先原图", style = MaterialTheme.typography.bodyMedium)
                 Switch(
                     checked = viewModel.preferOriginal,
-                    onCheckedChange = { viewModel.setPreferOriginal(it) },
+                    onCheckedChange = { viewModel.updatePreferOriginal(it) },
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
