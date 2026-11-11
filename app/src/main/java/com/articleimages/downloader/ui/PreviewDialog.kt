@@ -103,7 +103,24 @@ private fun ZoomableImage(url: String) {
         offset = if (scale > 1f) offset + panChange else Offset.Zero
     }
 
-    Box(modifier = Modifier.fillMaxSize().clipToBounds()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clipToBounds()
+            .transformable(transformState)
+            .pointerInput(url) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        if (scale > 1f) {
+                            scale = 1f
+                            offset = Offset.Zero
+                        } else {
+                            scale = 2f
+                        }
+                    }
+                )
+            },
+    ) {
         AsyncImage(
             model = url,
             contentDescription = null,
@@ -114,20 +131,7 @@ private fun ZoomableImage(url: String) {
                     scaleY = scale,
                     translationX = offset.x,
                     translationY = offset.y,
-                )
-                .transformable(transformState)
-                .pointerInput(url) {
-                    detectTapGestures(
-                        onDoubleTap = {
-                            if (scale > 1f) {
-                                scale = 1f
-                                offset = Offset.Zero
-                            } else {
-                                scale = 2f
-                            }
-                        }
-                    )
-                },
+                ),
             contentScale = ContentScale.Fit,
         )
     }

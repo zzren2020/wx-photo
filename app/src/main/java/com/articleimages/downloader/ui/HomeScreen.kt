@@ -25,7 +25,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -109,7 +109,7 @@ fun HomeScreen(
                 title = { Text("微信公众号图片下载器") },
                 actions = {
                     IconButton(onClick = onOpenLog) {
-                        Icon(Icons.Default.List, contentDescription = "日志")
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "日志")
                     }
                     IconButton(onClick = onOpenSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "设置")
@@ -118,7 +118,7 @@ fun HomeScreen(
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = { DownloadBottomBar(viewModel, download) },
+        bottomBar = { DownloadBottomBar(selectedCount, download, onDownload = { viewModel.downloadSelected() }) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -297,8 +297,9 @@ private fun ImageCell(
 
 @Composable
 private fun DownloadBottomBar(
-    viewModel: HomeViewModel,
+    selectedCount: Int,
     download: DownloadController.State,
+    onDownload: () -> Unit,
 ) {
     val context = LocalContext.current
     Surface(tonalElevation = 3.dp) {
@@ -365,13 +366,12 @@ private fun DownloadBottomBar(
                 }
 
                 DownloadController.State.Idle -> {
-                    val idleSelected = viewModel.entries.count { it.selected }
                     Button(
-                        onClick = { viewModel.downloadSelected() },
-                        enabled = idleSelected > 0 && !viewModel.reading,
+                        onClick = onDownload,
+                        enabled = selectedCount > 0,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("下载选中（$idleSelected 张）")
+                        Text("下载选中（$selectedCount 张）")
                     }
                 }
             }
