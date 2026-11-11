@@ -111,7 +111,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         val folder = buildFolderName(current.title)
-        DownloadController.start(
+        val accepted = DownloadController.start(
             getApplication<Application>(),
             DownloadController.Job(
                 article = current,
@@ -120,7 +120,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 folderName = folder,
             ),
         )
-        AppLog.i("下载", "提交 ${selected.size} 张，目录 $folder")
+        if (accepted) {
+            AppLog.i("下载", "提交 ${selected.size} 张，目录 $folder")
+        } else {
+            toast = "已有下载任务在进行中"
+        }
     }
 
     fun startFallback() {
